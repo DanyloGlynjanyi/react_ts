@@ -1,22 +1,29 @@
 import {useEffect, useState} from "react";
 import {CarsForm} from "./CarsForm";
-import {Cars} from "./Cars";
 import {carService} from "../../services/carService";
 import {ICar} from "../../interfaces/carInterface";
+import {Cars} from "./Cars";
 
 
 const CarsContainer = () => {
     const [cars, setCars] = useState<ICar[]>([])
+    const [trigger, setTrigger] = useState<boolean>(null)
+    const [carForUpdate, setCarForUpdate] = useState<ICar>(null)
 
     useEffect(() => {
             carService.getAll().then(({data}) => setCars(data))
         },
-        [])
+        [trigger])
+
+    const changeTrigger = () => {
+        setTrigger(prevState => !prevState)
+    }
+
     return (
         <div>
-            <CarsForm/>
+            <CarsForm changeTrigger={changeTrigger} setCarForUpdate={setCarForUpdate} carForUpdate={carForUpdate}/>
             <hr/>
-            <Cars/>
+            <Cars cars={cars} setCarForUpdate={setCarForUpdate} changeTrigger={changeTrigger} />
         </div>
     );
 };
